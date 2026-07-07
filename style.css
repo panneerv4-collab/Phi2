@@ -1,418 +1,1130 @@
 /* ==========================================================================
    PhiAcademy — Mathematics Social Card Generator
-   Design system: "graded notebook page"
-   Tokens live at the top. Everything else derives from them.
+   Notebook Alignment Edition
    ========================================================================== */
 
 :root {
-  /* ---- palette: real notebook materials, not a template default ---- */
-  --paper:        #FFFFFF;   /* clean white notebook paper  */
-  --paper-edge:   #E9E9E9;   /* shadowed paper edge         */
-  --ink:          #1B3A6B;   /* navy fountain-pen ink       */
-  --ink-soft:     #2E4E82;   /* lighter ink for sub-text    */
-  --graphite:     #514C46;   /* pencil / secondary text     */
-  --rule-blue:    #9DC1EA;   /* clear blue ruled lines      */
-  --margin-red:   #D08E8E;   /* vertical margin rule        */
-  --red-pen:      #B4302A;   /* teacher's red pen           */
-  --highlighter:  #FFE066;   /* yellow highlighter marker   */
-  --gold-tape:    #C49B47;   /* washi-tape / gold accent    */
-  --shadow:       rgba(35, 24, 10, 0.16);
-  --hole-fill:    #F2F2F2;
-  --hole-edge:    #D2D2D2;
 
-  /* ---- theme overrides (swappable per-card via .theme-*) ---- */
-  --accent: var(--red-pen);
-  --highlight: var(--highlighter);
+  --paper:        #FFFFFF;
+  --paper-edge:   #E9E9E9;
 
-  /* ---- type ---- */
-  --font-display: 'Kalam', 'Segoe Print', cursive;
-  --font-body: 'Patrick Hand', 'Comic Sans MS', cursive;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --ink:          #1B3A6B;
+  --ink-soft:     #2E4E82;
+  --graphite:     #514C46;
 
-  /* ---- card geometry (Instagram portrait, native px) ---- */
-  --card-w: 1080px;
-  --card-h: 1350px;
+  --rule-blue:    #9DC1EA;
+  --margin-red:   #D08E8E;
+
+  --red-pen:      #B4302A;
+  --highlighter:  #FFE066;
+  --gold-tape:    #C49B47;
+
+  --shadow: rgba(35,24,10,0.16);
+
+  --hole-fill:#F2F2F2;
+  --hole-edge:#D2D2D2;
+
+
+  --accent:var(--red-pen);
+  --highlight:var(--highlighter);
+
+
+  --font-display:'Kalam','Segoe Print',cursive;
+  --font-body:'Patrick Hand','Comic Sans MS',cursive;
+  --font-mono:'JetBrains Mono','Courier New',monospace;
+
+
+  --card-w:1080px;
+  --card-h:1350px;
+
+
+  /* notebook spacing */
+  --rule-size:62px;
 }
 
-/* Theme variants — swap the "pen" and "highlighter", keep paper constant */
-.theme-navy   { --accent: #B4302A; --highlight: #FFE066; }
-.theme-emerald{ --accent: #1E6E4F; --highlight: #B7EFC5; }
-.theme-plum   { --accent: #7A3B69; --highlight: #F3C6E8; }
 
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #E8E3D8;
-  font-family: var(--font-body);
-  color: var(--ink);
+.theme-navy{
+  --accent:#B4302A;
+  --highlight:#FFE066;
 }
 
-::selection { background: var(--highlighter); color: var(--ink); }
-
-/* ==========================================================================
-   App chrome (editor shell) — deliberately quiet so the card is the focus
-   ========================================================================== */
-
-.app {
-  min-height: 100vh;
+.theme-emerald{
+  --accent:#1E6E4F;
+  --highlight:#B7EFC5;
 }
 
-.stage-wrap {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
+.theme-plum{
+  --accent:#7A3B69;
+  --highlight:#F3C6E8;
 }
 
-.stage {
-  transform-origin: top center;
-  flex-shrink: 0;
+
+
+*{
+ box-sizing:border-box;
 }
 
-/* Embed mode: automation-friendly, no chrome, card rendered at native size */
-body.embed { background: var(--paper); }
-body.embed .stage-wrap { padding: 0; height: auto; min-height: 0; display: block; }
-body.embed .stage { transform: none !important; }
 
-/* ==========================================================================
-   THE CARD — signature component
-   ========================================================================== */
+html,body{
 
-.card {
-  width: var(--card-w);
-  height: var(--card-h);
-  background: var(--paper);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 30px 60px var(--shadow), 0 2px 10px rgba(0,0,0,0.08);
-  color: var(--ink);
+ margin:0;
+ padding:0;
+
+ background:#E8E3D8;
+
+ font-family:var(--font-body);
+
+ color:var(--ink);
+
 }
 
-/* subtle paper grain */
-.card__grain {
-  position: absolute;
-  inset: 0;
-  opacity: 0.03;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+
+::selection{
+ background:var(--highlighter);
+ color:var(--ink);
 }
 
-/* shadowed edge to feel like a page lifted off a stack */
-.card__edge {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  box-shadow: inset 0 0 46px var(--paper-edge);
+
+
+/* =============================
+   EMBED MODE
+============================= */
+
+
+.app{
+ min-height:100vh;
 }
 
-/* ruled lines across the writable area */
-.card__rules {
-  position: absolute;
-  top: 210px;
-  left: 118px;
-  right: 46px;
-  bottom: 150px;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 60px,
-    var(--rule-blue) 61px,
-    var(--rule-blue) 62px
-  );
-  opacity: 0.85;
-  pointer-events: none;
+
+.stage-wrap{
+
+ min-height:100vh;
+
+ display:flex;
+
+ align-items:center;
+
+ justify-content:center;
+
+ padding:48px 24px;
+
 }
 
-/* red vertical margin rule */
-.card__margin {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 100px;
-  width: 2px;
-  background: var(--margin-red);
-  opacity: 0.65;
+
+
+.stage{
+
+ transform-origin:top center;
+
+ flex-shrink:0;
+
 }
 
-/* spiral-bound holes down the left edge */
-.card__holes {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 34px;
-  width: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  pointer-events: none;
-}
-.card__holes span {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--hole-fill);
-  border: 2px solid var(--hole-edge);
-  box-shadow: inset 0 3px 5px rgba(0,0,0,0.14);
+
+
+body.embed{
+
+ background:var(--paper);
+
 }
 
-/* dog-ear fold, bottom right */
-.card__fold {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 74px;
-  height: 74px;
-  background: linear-gradient(135deg, transparent 49%, var(--paper-edge) 50%);
-  box-shadow: -3px -3px 10px rgba(0,0,0,0.06);
+
+body.embed .stage-wrap{
+
+ padding:0;
+
+ height:auto;
+
+ min-height:0;
+
+ display:block;
+
 }
 
-/* ---- content layer ---- */
-.card__content {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  padding: 56px 64px 48px 132px;
-  display: flex;
-  flex-direction: column;
+
+body.embed .stage{
+
+ transform:none!important;
+
 }
 
-.card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 22px;
+
+
+
+/* =============================
+   CARD
+============================= */
+
+
+.card{
+
+ width:var(--card-w);
+
+ height:var(--card-h);
+
+ background:var(--paper);
+
+ position:relative;
+
+ overflow:hidden;
+
+ box-shadow:
+ 0 30px 60px var(--shadow),
+ 0 2px 10px rgba(0,0,0,.08);
+
+ color:var(--ink);
+
 }
 
-.card__brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+
+
+
+.card__grain{
+
+ position:absolute;
+
+ inset:0;
+
+ opacity:.03;
+
+ mix-blend-mode:multiply;
+
+ pointer-events:none;
+
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
 }
 
-.card__brand-badge {
-  width: 56px;
-  height: 56px;
-  flex-shrink: 0;
+
+
+.card__edge{
+
+ position:absolute;
+
+ inset:0;
+
+ pointer-events:none;
+
+ box-shadow:inset 0 0 46px var(--paper-edge);
+
 }
 
-.card__brand-name {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  letter-spacing: 0.03em;
-  color: var(--ink);
-  line-height: 1.1;
+
+
+
+/* =============================
+   BLUE NOTEBOOK LINES
+============================= */
+
+
+.card__rules{
+
+ position:absolute;
+
+ top:220px;
+
+ left:118px;
+
+ right:46px;
+
+ bottom:150px;
+
+
+ background-image:
+
+ repeating-linear-gradient(
+
+ to bottom,
+
+ transparent 0,
+
+ transparent calc(var(--rule-size) - 1px),
+
+ var(--rule-blue) var(--rule-size),
+
+ var(--rule-blue) calc(var(--rule-size) + 1px)
+
+ );
+
+
+ opacity:.85;
+
+ pointer-events:none;
+
 }
 
-.card__brand-name small {
-  display: block;
-  font-size: 11px;
-  color: var(--graphite);
-  letter-spacing: 0.12em;
-  margin-top: 2px;
+
+
+
+.card__margin{
+
+ position:absolute;
+
+ top:0;
+
+ bottom:0;
+
+ left:100px;
+
+ width:2px;
+
+ background:var(--margin-red);
+
+ opacity:.65;
+
 }
 
-.card__tag {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.05em;
-  color: var(--paper);
-  background: var(--ink);
-  padding: 7px 16px 6px;
-  border-radius: 20px;
-  transform: rotate(-2deg);
-  white-space: nowrap;
+
+
+
+.card__holes{
+
+ position:absolute;
+
+ top:0;
+
+ bottom:0;
+
+ left:34px;
+
+ width:40px;
+
+ display:flex;
+
+ flex-direction:column;
+
+ justify-content:space-evenly;
+
+ align-items:center;
+
 }
 
-.card__eyebrow {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  letter-spacing: 0.14em;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.card__eyebrow::before { content: "✎ "; }
 
-.card__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 58px;
-  line-height: 1.06;
-  color: var(--ink);
-  margin: 0 0 20px;
-  max-width: 95%;
+
+.card__holes span{
+
+ width:34px;
+
+ height:34px;
+
+ border-radius:50%;
+
+ background:var(--hole-fill);
+
+ border:2px solid var(--hole-edge);
+
+ box-shadow:inset 0 3px 5px rgba(0,0,0,.14);
+
 }
 
-.card__problem {
-  border: 2px dashed var(--ink-soft);
-  border-radius: 10px;
-  padding: 18px 22px;
-  font-family: var(--font-body);
-  font-size: 26px;
-  line-height: 1.42;
-  color: var(--ink);
-  background: rgba(255,255,255,0.35);
-  margin-bottom: 22px;
-  position: relative;
-}
-.card__problem::before {
-  content: "GIVEN";
-  position: absolute;
-  top: -13px;
-  left: 18px;
-  background: var(--paper);
-  padding: 0 8px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--graphite);
+
+
+
+.card__fold{
+
+ position:absolute;
+
+ right:0;
+
+ bottom:0;
+
+ width:74px;
+
+ height:74px;
+
+ background:linear-gradient(
+ 135deg,
+ transparent 49%,
+ var(--paper-edge) 50%
+ );
+
 }
 
-.card__steps {
-  list-style: none;
-  margin: 0 0 20px;
-  padding: 0;
-  font-family: var(--font-body);
-  font-size: 27px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-  flex: 1;
+
+
+
+
+/* =============================
+   CONTENT
+============================= */
+
+
+.card__content{
+
+ position:relative;
+
+ z-index:2;
+
+ height:100%;
+
+ padding:56px 64px 48px 132px;
+
+ display:flex;
+
+ flex-direction:column;
+
+}
+/* =============================
+   HEADER
+============================= */
+
+
+.card__header{
+
+ display:flex;
+
+ align-items:center;
+
+ justify-content:space-between;
+
+ margin-bottom:22px;
+
 }
 
-.card__steps li {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 10px;
+
+
+.card__brand{
+
+ display:flex;
+
+ align-items:center;
+
+ gap:14px;
+
 }
 
-.card__steps li::before {
-  content: counter(step) ".";
-  counter-increment: step;
-  font-family: var(--font-mono);
-  color: var(--accent);
-  font-size: 20px;
-  padding-top: 5px;
-  flex-shrink: 0;
+
+
+.card__brand-badge{
+
+ width:56px;
+
+ height:56px;
+
+ flex-shrink:0;
+
 }
 
-.card__steps { counter-reset: step; }
 
-/* highlighter-marker effect on inline key phrases */
-.hl {
-  position: relative;
-  white-space: nowrap;
-  padding: 0 2px;
-}
-.hl::before {
-  content: "";
-  position: absolute;
-  left: -5px;
-  right: -5px;
-  top: 14%;
-  bottom: 6%;
-  background: var(--highlight);
-  transform: rotate(-1.1deg);
-  z-index: -1;
-  mix-blend-mode: multiply;
-  border-radius: 3px 9px 4px 10px / 8px 4px 9px 3px;
-  opacity: 0.9;
+
+.card__brand-name{
+
+ font-family:var(--font-mono);
+
+ font-size:20px;
+
+ letter-spacing:.03em;
+
+ color:var(--ink);
+
+ line-height:1.1;
+
 }
 
-.card__answer-row {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  margin-top: auto;
+
+
+.card__brand-name small{
+
+ display:block;
+
+ font-size:11px;
+
+ color:var(--graphite);
+
+ letter-spacing:.12em;
+
+ margin-top:2px;
+
 }
 
-.card__answer-wrap {
-  position: relative;
-  display: inline-flex;
-  padding: 10px 26px;
+
+
+
+.card__tag{
+
+ font-family:var(--font-mono);
+
+ font-size:13px;
+
+ letter-spacing:.05em;
+
+ color:var(--paper);
+
+ background:var(--ink);
+
+ padding:7px 16px 6px;
+
+ border-radius:20px;
+
+ transform:rotate(-2deg);
+
+ white-space:nowrap;
+
 }
 
-.card__answer-wrap svg {
-  position: absolute;
-  inset: -16px;
-  width: calc(100% + 32px);
-  height: calc(100% + 32px);
-  overflow: visible;
-}
-.card__answer-wrap svg path {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 4;
-  stroke-linecap: round;
-}
 
-.card__answer {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 40px;
-  color: var(--ink);
-  position: relative;
-  z-index: 1;
-}
 
-.card__stamp {
-  font-family: var(--font-display);
-  font-size: 30px;
-  color: var(--accent);
-  border: 3px solid var(--accent);
-  border-radius: 50%;
-  width: 84px;
-  height: 84px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(-9deg);
-  opacity: 0.92;
-  flex-shrink: 0;
+
+
+/* =============================
+   TITLE AREA
+============================= */
+
+
+.card__eyebrow{
+
+ font-family:var(--font-mono);
+
+ font-size:14px;
+
+ letter-spacing:.14em;
+
+ color:var(--accent);
+
+ text-transform:uppercase;
+
+ margin-bottom:6px;
+
 }
 
-.card__footer {
-  margin-top: 28px;
-  padding-top: 16px;
-  border-top: 2px solid var(--rule-blue);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  font-family: var(--font-mono);
-  font-size: 15px;
-  color: var(--graphite);
+
+
+.card__eyebrow::before{
+
+ content:"✎ ";
+
 }
 
-.card__hashtags { max-width: 70%; line-height: 1.6; }
-.card__handle { color: var(--ink); font-weight: bold; }
-.card__pageno { text-align: right; white-space: nowrap; }
 
-/* washi tape accents on the corners */
-.card__tape {
-  position: absolute;
-  width: 120px;
-  height: 34px;
-  background: var(--gold-tape);
-  opacity: 0.55;
-  z-index: 3;
-}
-.card__tape--tl { top: -12px; left: 90px; transform: rotate(-6deg); }
-.card__tape--tr { top: -12px; right: 60px; transform: rotate(5deg); }
 
-/* ==========================================================================
-   Responsive editor chrome
-   ========================================================================== */
-@media (max-width: 900px) {
-  .stage-wrap { min-height: auto; padding: 28px 12px 60px; }
+
+.card__title{
+
+ font-family:var(--font-display);
+
+ font-weight:700;
+
+ font-size:58px;
+
+ line-height:1.06;
+
+ color:var(--ink);
+
+ margin:0 0 20px;
+
+ max-width:95%;
+
 }
 
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
+
+
+
+/* =============================
+   QUESTION BOX
+   Align with notebook writing
+============================= */
+
+
+.card__problem{
+
+ border:2px dashed var(--ink-soft);
+
+ border-radius:10px;
+
+
+ padding:10px 22px;
+
+
+ font-family:var(--font-body);
+
+ font-size:26px;
+
+
+ /* notebook baseline */
+ line-height:62px;
+
+
+ color:var(--ink);
+
+
+ background:rgba(255,255,255,.35);
+
+
+ margin-bottom:22px;
+
+
+ position:relative;
+
 }
 
-:focus-visible { outline: 3px solid var(--ink-soft); outline-offset: 2px; }
+
+
+
+.card__problem::before{
+
+ content:"GIVEN";
+
+ position:absolute;
+
+ top:-13px;
+
+ left:18px;
+
+
+ background:var(--paper);
+
+ padding:0 8px;
+
+
+ font-family:var(--font-mono);
+
+ font-size:11px;
+
+ letter-spacing:.1em;
+
+
+ color:var(--graphite);
+
+}
+
+
+
+
+
+/* =============================
+   SOLUTION STEPS
+   Text follows blue lines
+============================= */
+
+
+.card__steps{
+
+
+ list-style:none;
+
+
+ margin:0 0 20px;
+
+
+ padding:0;
+
+
+ font-family:var(--font-body);
+
+
+ font-size:27px;
+
+
+ /*
+   IMPORTANT:
+   Same height as notebook rule spacing
+ */
+
+ line-height:var(--rule-size);
+
+
+
+ color:var(--ink-soft);
+
+
+ flex:1;
+
+
+ counter-reset:step;
+
+}
+
+
+
+
+.card__steps li{
+
+
+ display:flex;
+
+
+ align-items:flex-start;
+
+
+ gap:14px;
+
+
+ margin-bottom:0;
+
+
+ min-height:var(--rule-size);
+
+
+}
+
+
+
+.card__steps li::before{
+
+
+ content:counter(step) ".";
+
+
+ counter-increment:step;
+
+
+ font-family:var(--font-mono);
+
+
+ color:var(--accent);
+
+
+ font-size:20px;
+
+
+ padding-top:18px;
+
+
+ flex-shrink:0;
+
+
+}
+
+
+
+
+/* Move handwriting slightly down
+   to sit on blue line */
+
+.card__steps li,
+.card__problem{
+
+
+ transform:translateY(5px);
+
+}
+
+
+
+
+
+
+/* =============================
+   HIGHLIGHT MARKER
+============================= */
+
+
+.hl{
+
+
+ position:relative;
+
+
+ white-space:nowrap;
+
+
+ padding:0 2px;
+
+
+}
+
+
+
+.hl::before{
+
+
+ content:"";
+
+
+ position:absolute;
+
+
+ left:-5px;
+
+
+ right:-5px;
+
+
+ top:14%;
+
+
+ bottom:6%;
+
+
+ background:var(--highlight);
+
+
+ transform:rotate(-1.1deg);
+
+
+ z-index:-1;
+
+
+ mix-blend-mode:multiply;
+
+
+ border-radius:
+ 3px 9px 4px 10px /
+ 8px 4px 9px 3px;
+
+
+ opacity:.9;
+
+
+}
+
+
+
+
+
+/* =============================
+   ANSWER
+============================= */
+
+
+.card__answer-row{
+
+
+ display:flex;
+
+
+ align-items:center;
+
+
+ gap:22px;
+
+
+ margin-top:auto;
+
+
+}
+
+
+
+.card__answer-wrap{
+
+
+ position:relative;
+
+
+ display:inline-flex;
+
+
+ padding:10px 26px;
+
+
+}
+
+
+
+
+.card__answer-wrap svg{
+
+
+ position:absolute;
+
+
+ inset:-16px;
+
+
+ width:calc(100% + 32px);
+
+
+ height:calc(100% + 32px);
+
+
+ overflow:visible;
+
+
+}
+
+
+
+.card__answer-wrap svg path{
+
+
+ fill:none;
+
+
+ stroke:var(--accent);
+
+
+ stroke-width:4;
+
+
+ stroke-linecap:round;
+
+
+}
+
+
+
+
+
+.card__answer{
+
+
+ font-family:var(--font-display);
+
+
+ font-weight:700;
+
+
+ font-size:40px;
+
+
+ color:var(--ink);
+
+
+ position:relative;
+
+
+ z-index:1;
+
+
+}
+
+
+
+
+.card__stamp{
+
+
+ font-family:var(--font-display);
+
+
+ font-size:30px;
+
+
+ color:var(--accent);
+
+
+ border:3px solid var(--accent);
+
+
+ border-radius:50%;
+
+
+ width:84px;
+
+
+ height:84px;
+
+
+ display:flex;
+
+
+ align-items:center;
+
+
+ justify-content:center;
+
+
+ transform:rotate(-9deg);
+
+
+ opacity:.92;
+
+
+ flex-shrink:0;
+
+
+}
+
+
+
+
+
+/* =============================
+   FOOTER
+============================= */
+
+
+.card__footer{
+
+
+ margin-top:28px;
+
+
+ padding-top:16px;
+
+
+ border-top:2px solid var(--rule-blue);
+
+
+ display:flex;
+
+
+ justify-content:space-between;
+
+
+ align-items:flex-end;
+
+
+ font-family:var(--font-mono);
+
+
+ font-size:15px;
+
+
+ color:var(--graphite);
+
+
+}
+
+
+
+
+.card__hashtags{
+
+
+ max-width:70%;
+
+
+ line-height:1.6;
+
+
+}
+
+
+
+.card__handle{
+
+
+ color:var(--ink);
+
+
+ font-weight:bold;
+
+
+}
+
+
+
+.card__pageno{
+
+
+ text-align:right;
+
+
+ white-space:nowrap;
+
+
+}
+
+
+
+
+
+/* =============================
+   WASHI TAPE
+============================= */
+
+
+.card__tape{
+
+
+ position:absolute;
+
+
+ width:120px;
+
+
+ height:34px;
+
+
+ background:var(--gold-tape);
+
+
+ opacity:.55;
+
+
+ z-index:3;
+
+
+}
+
+
+
+.card__tape--tl{
+
+
+ top:-12px;
+
+
+ left:90px;
+
+
+ transform:rotate(-6deg);
+
+
+}
+
+
+
+.card__tape--tr{
+
+
+ top:-12px;
+
+
+ right:60px;
+
+
+ transform:rotate(5deg);
+
+
+}
+
+
+
+
+
+/* =============================
+   RESPONSIVE
+============================= */
+
+
+@media(max-width:900px){
+
+
+.stage-wrap{
+
+
+ min-height:auto;
+
+
+ padding:28px 12px 60px;
+
+
+}
+
+
+}
+
+
+
+
+@media(prefers-reduced-motion:reduce){
+
+
+*{
+
+
+ transition:none!important;
+
+
+}
+
+
+}
+
+
+
+
+:focus-visible{
+
+
+ outline:3px solid var(--ink-soft);
+
+
+ outline-offset:2px;
+
+
+}
