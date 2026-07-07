@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1.0">
+<title>PhiAcademy Card — Automation Template</title>
+<!--
+  AUTOMATION TEMPLATE
+  ====================
+  This page renders ONE card at its true 1080x1350px size and nothing else.
+  It is the URL your n8n workflow should hand to ScreenshotOne.
+
+  Example:
+  https://yourname.github.io/PhiAcademy/templates/mathematics-card.html
+    ?embed=1
+    &topic=Calculus%20%C2%B7%20Limits
+    &title=The%20Squeeze%20Theorem
+    &problem=Evaluate%20lim(x%E2%86%920)%20of%20x%C2%B2%C2%B7sin(1%2Fx)
+    &steps=Step%20one|Step%20two|Step%20three
+    &formula=So%20**lim%20%3D%200**
+    &answer=L%20%3D%200
+    &hashtags=%23calculus%20%23mathhelp
+    &handle=%40phiacademy
+    &cardno=014
+    &theme=navy
+
+  See the project README.md for the full parameter reference and a
+  ready-to-import n8n workflow outline.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  /* This template is always embed-mode: native size, no editor chrome. */
+  html, body { background: transparent; }
+  .stage-wrap { padding: 0 !important; height: auto !important; display: block !important; }
+  .stage { transform: none !important; }
+</style>
+</head>
+<body class="embed">
+<div class="app" style="display:block;">
+  <main class="stage-wrap">
+    <div class="stage">
+      <div class="card theme-navy" id="phi-card">
+        <div class="card__grain"></div>
+        <div class="card__edge"></div>
+        <span class="card__tape card__tape--tl"></span>
+        <span class="card__tape card__tape--tr"></span>
+        <div class="card__holes">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="card__margin"></div>
+        <div class="card__rules"></div>
+
+        <div class="card__content">
+          <div class="card__header">
+            <div class="card__brand">
+              <img class="card__brand-badge" src="../assets/logos/phiacademy-logo.png" alt="">
+              <div class="card__brand-name">PhiAcademy<small>DAILY MATH NOTES</small></div>
+            </div>
+            <div class="card__tag js-topic">Calculus · Limits</div>
+          </div>
+
+          <div class="card__eyebrow">Today's Problem</div>
+          <h2 class="card__title js-title">The Squeeze Theorem</h2>
+
+          <div class="card__problem js-problem">Evaluate lim(x→0) of x² · sin(1/x)</div>
+
+          <ol class="card__steps js-steps"></ol>
+
+          <div class="card__answer-row">
+            <div class="js-formula" style="font-family:var(--font-body); font-size:26px; flex:1;"></div>
+            <div class="card__answer-wrap">
+              <svg class="js-answer-circle"></svg>
+              <span class="card__answer js-answer">L = 0</span>
+            </div>
+            <div class="card__stamp">✓</div>
+          </div>
+
+          <div class="card__footer">
+            <div class="card__hashtags js-hashtags">#calculus #limits #mathtutor</div>
+            <div class="card__pageno">
+              <span class="card__handle js-handle">@phiacademy</span><br>
+              <span class="js-cardno">No. 014</span>
+            </div>
+          </div>
+        </div>
+        <div class="card__fold"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="../script.js"></script>
+</body>
+</html>
