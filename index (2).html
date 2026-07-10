@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhiAcademy — Worked Solution Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fdfcf9;
+    --paper-warm:#f7f4ec;
+    --rule-blue:#b9cbe8;
+    --ink-blue:#1c3f8f;
+    --ink-red:#b3273e;
+    --graphite:#2a2a28;
+    --shadow:rgba(20,15,5,0.28);
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{ margin:0; }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#3a3630;
+    font-family:'Patrick Hand', cursive;
+  }
+
+  .stage{ padding:60px; }
+  body.embed .stage{ padding:0; background:transparent; }
+  body.embed{ background:transparent; }
+
+  /* A4 real-notebook proportions (210:297mm), not social-post 4:5 */
+  .page{
+    position:relative;
+    width:1240px;
+    height:1754px;
+    background:
+      radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,0.55), transparent 60%),
+      linear-gradient(180deg, var(--paper) 0%, var(--paper-warm) 100%);
+    box-shadow:
+      0 40px 90px -20px var(--shadow),
+      0 10px 25px -8px rgba(0,0,0,0.35);
+    overflow:hidden;
+    transform:rotate(-0.3deg);
+  }
+
+  /* paper fiber grain */
+  .page::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.045 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity:0.6;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* soft top-down lighting sheen + gentle focus falloff toward the edges,
+     approximating a real macro photo rather than a flat scan */
+  .page::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(140% 120% at 46% 34%, transparent 46%, rgba(0,0,0,0.05) 78%, rgba(0,0,0,0.13) 100%),
+      radial-gradient(70% 40% at 35% 6%, rgba(255,255,255,0.35), transparent 70%);
+    pointer-events:none;
+    z-index:6;
+  }
+
+  /* ---- ruled lines — no left margin rule, matches the photo ---- */
+  .rules{
+    position:absolute;
+    top:150px; left:0; right:0; bottom:0;
+    background-image:repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 65px,
+      var(--rule-blue) 66px
+    );
+    opacity:0.75;
+    z-index:1;
+  }
+
+  /* ---- spiral binding: right edge, slightly out of focus like a real
+         close photo where the coil sits just past the depth of field ---- */
+  .spiral-wrap{
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:76px;
+    z-index:5;
+    filter:blur(0.7px) saturate(0.9);
+  }
+  .spiral{
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    align-items:center;
+  }
+  .spiral span{
+    position:relative;
+    width:26px; height:26px;
+    border-radius:50%;
+    background: radial-gradient(circle at 42% 38%, #3a3a3a 0%, #111 55%, #000 100%);
+    box-shadow:
+      inset 0 2px 3px rgba(0,0,0,0.9),
+      inset 0 -1px 1px rgba(255,255,255,0.05),
+      0 1px 1px rgba(255,255,255,0.25);
+  }
+  .spiral span::before{
+    content:"";
+    position:absolute;
+    top:-9px; left:-9px;
+    width:44px; height:44px;
+    border-radius:50%;
+    background:
+      conic-gradient(from 210deg,
+        #f5f5f5 0deg, #b8b8b8 40deg, #4a4a4a 90deg, #1a1a1a 140deg,
+        #3a3a3a 180deg, #7a7a7a 230deg, #e8e8e8 280deg, #ffffff 320deg, #f5f5f5 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 58%, #000 60%, #000 84%, transparent 86%);
+            mask: radial-gradient(circle, transparent 58%, #000 60%, #000 84%, transparent 86%);
+    filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.5));
+  }
+  .spiral span::after{
+    content:"";
+    position:absolute;
+    top:-9px; left:-9px;
+    width:44px; height:44px;
+    border-radius:50%;
+    background: conic-gradient(from 30deg, transparent 0deg, rgba(255,255,255,0.9) 18deg, transparent 45deg, transparent 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%, #000 68%, transparent 69%);
+            mask: radial-gradient(circle, transparent 60%, #000 61%, #000 68%, transparent 69%);
+    opacity:0.95;
+  }
+  .spiral-shadow{
+    position:absolute;
+    top:0; right:70px; bottom:0;
+    width:38px;
+    background:linear-gradient(to left, rgba(0,0,0,0.13), transparent);
+    z-index:4;
+  }
+
+  /* ---- content ---- */
+  .content{
+    position:relative;
+    z-index:2;
+    padding:70px 110px 80px 76px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:19px;
+    font-weight:700;
+    letter-spacing:2px;
+    color:var(--graphite);
+    text-transform:uppercase;
+    opacity:0.5;
+    margin-bottom:10px;
+  }
+
+  /* every handwritten line gets ink-pen styling: consistent stroke via the
+     handwriting font, plus a faint bleed shadow to mimic pen pressure into
+     the paper fiber, rather than crisp vector-clean type */
+  .ink{
+    color:var(--ink-blue);
+    text-shadow:0 0.4px 0 rgba(28,63,143,0.30);
+  }
+
+  .heading{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size:46px;
+    margin:0 0 6px 0;
+    line-height:1;
+  }
+
+  .problem{
+    font-family:'Kalam', cursive;
+    font-size:32px;
+    line-height:66px;
+    margin-bottom:0;
+  }
+
+  .steps{
+    margin-top:4px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  .step{
+    font-family:'Kalam', cursive;
+    font-size:30px;
+    line-height:66px;
+    height:66px;
+    display:flex;
+    align-items:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* stacked fraction, built from the fraction-parsing helper below */
+  .frac{
+    display:inline-flex;
+    flex-direction:column;
+    align-items:center;
+    vertical-align:middle;
+    margin:0 4px;
+    line-height:1.05;
+    font-size:0.66em;
+    transform:translateY(-2px);
+  }
+  .frac .num{ padding:0 4px 1px; border-bottom:2.5px solid currentColor; }
+  .frac .den{ padding:2px 4px 0; }
+
+  /* inline red-pen emphasis / corrective marks, written as **text** */
+  .redpen{ color:var(--ink-red); text-shadow:0 0.4px 0 rgba(179,39,62,0.3); }
+
+  .answer-block{
+    margin-top:auto;
+    padding-top:22px;
+    display:flex;
+    align-items:baseline;
+    gap:20px;
+  }
+  .answer-label{
+    font-family:'Kalam', cursive;
+    font-size:30px;
+    font-weight:700;
+    color:var(--ink-blue);
+  }
+  .answer-value{
+    font-family:'Kalam', cursive;
+    font-weight:700;
+    font-size:42px;
+    color:var(--ink-red);
+    position:relative;
+    padding:2px 14px;
+  }
+  .answer-value::after{
+    content:"";
+    position:absolute;
+    left:-6px; right:-6px; bottom:-9px;
+    height:6px;
+    background:var(--ink-red);
+    opacity:0.85;
+    transform:rotate(-0.7deg);
+    border-radius:3px;
+  }
+  .answer-value::before{
+    content:"";
+    position:absolute;
+    left:-6px; right:-6px; bottom:-16px;
+    height:4px;
+    background:var(--ink-red);
+    opacity:0.6;
+    transform:rotate(0.5deg);
+    border-radius:3px;
+  }
+
+  .footer{
+    margin-top:36px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    font-family:'JetBrains Mono', monospace;
+    font-size:19px;
+    color:var(--graphite);
+    opacity:0.6;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="page" id="solution-card">
+    <div class="rules"></div>
+    <div class="spiral-shadow"></div>
+    <div class="spiral-wrap"><div class="spiral" id="spiralHoles"></div></div>
+    <div class="content">
+      <div class="eyebrow js-topic">Additional Mathematics</div>
+      <h1 class="heading ink js-heading">Evaluate</h1>
+      <div class="problem ink js-problem"></div>
+      <div class="steps js-steps"></div>
+      <div class="answer-block">
+        <span class="answer-label">Answer =</span>
+        <span class="answer-value js-answer"></span>
+      </div>
+      <div class="footer">
+        <span class="js-handle">@phiacademy</span>
+        <span class="js-cardno">No. 001</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  function qp(name, fallback){
+    const v = params.get(name);
+    return v ? v : fallback;
+  }
+
+  if (qp('embed','') === '1') document.body.classList.add('embed');
+
+  /* --- lightweight inline math renderer ---
+     Supports:
+       **text**   -> red-pen emphasis (corrective mark / final result)
+       a/b        -> stacked fraction (short numeric/variable tokens only,
+                     so normal dates/URLs elsewhere never trigger it)
+       x^2        -> true superscript (Gemini's Unicode ² etc. also works
+                     untouched, since this only rewrites explicit ^n)     */
+  function renderInline(text){
+    const div = document.createElement('div');
+    div.textContent = text;
+    let escaped = div.innerHTML;
+
+    escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<span class="redpen">$1</span>');
+    escaped = escaped.replace(/\^(-?[A-Za-z0-9]+)/g, '<sup>$1</sup>');
+    escaped = escaped.replace(
+      /([A-Za-z0-9²³¹⁰⁴⁵⁶⁷⁸⁹π]{1,6})\/([A-Za-z0-9²³¹⁰⁴⁵⁶⁷⁸⁹π]{1,6})/g,
+      '<span class="frac"><span class="num">$1</span><span class="den">$2</span></span>'
+    );
+    return escaped;
+  }
+
+  /* per-line handwriting jitter — small random rotate/shift so lines don't
+     sit in a perfectly mechanical grid, matching "genuinely human" writing */
+  function jitter(el){
+    const rot = (Math.random() * 0.9 - 0.45).toFixed(2);
+    const shiftY = (Math.random() * 3 - 1.5).toFixed(1);
+    const shiftX = (Math.random() * 2 - 1).toFixed(1);
+    el.style.transform = `rotate(${rot}deg) translate(${shiftX}px, ${shiftY}px)`;
+
+    /* tiny ink saturation/lightness variance per line, like a real ballpoint
+       running slightly drier or wetter from line to line */
+    const lightness = 34 + (Math.random() * 6 - 3);
+    const saturation = 63 + (Math.random() * 8 - 4);
+    if (el.classList.contains('ink') || el.classList.contains('step')) {
+      el.style.color = `hsl(224, ${saturation.toFixed(0)}%, ${lightness.toFixed(0)}%)`;
+    }
+  }
+
+  document.querySelector('.js-topic').textContent = qp('topic', 'Additional Mathematics');
+  document.querySelector('.js-heading').textContent = qp('heading', 'Evaluate');
+
+  const problemEl = document.querySelector('.js-problem');
+  problemEl.innerHTML = renderInline(qp('problem', 'I = ∫₁³ (x² + 3x − 2) dx'));
+  jitter(problemEl);
+
+  document.querySelector('.js-answer').innerHTML = renderInline(qp('answer', '50/3'));
+  document.querySelector('.js-handle').textContent = qp('handle', '@phiacademy');
+  document.querySelector('.js-cardno').textContent = 'No. ' + qp('cardno', '001');
+
+  const stepsRaw = qp('steps', 'I = [x³/3 + 3x²/2 − 2x]₁³|I = 33/2 − (−1/6)|I = 99/6 + 1/6');
+  const stepsWrap = document.querySelector('.js-steps');
+  stepsRaw.split('|').forEach((line) => {
+    const el = document.createElement('div');
+    el.className = 'step ink';
+    el.innerHTML = renderInline(line);
+    stepsWrap.appendChild(el);
+    jitter(el);
+  });
+
+  const spiral = document.getElementById('spiralHoles');
+  for (let i = 0; i < 20; i++){
+    const s = document.createElement('span');
+    spiral.appendChild(s);
+  }
+</script>
+</body>
+</html>
