@@ -27,7 +27,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    background:#3a3630;
+    background:#2b2b2b;
     font-family:'Patrick Hand', cursive;
   }
 
@@ -210,6 +210,12 @@
     overflow:hidden;
     text-overflow:ellipsis;
   }
+  .step .stepnum{
+    font-weight:700;
+    margin-right:12px;
+    opacity:0.85;
+    flex-shrink:0;
+  }
 
   /* stacked fraction, built from the fraction-parsing helper below */
   .frac{
@@ -365,10 +371,10 @@
 
   const stepsRaw = qp('steps', 'I = [x³/3 + 3x²/2 − 2x]₁³|I = 33/2 − (−1/6)|I = 99/6 + 1/6');
   const stepsWrap = document.querySelector('.js-steps');
-  stepsRaw.split('|').forEach((line) => {
+  stepsRaw.split('|').forEach((line, i) => {
     const el = document.createElement('div');
     el.className = 'step ink';
-    el.innerHTML = renderInline(line);
+    el.innerHTML = `<span class="stepnum">Step ${i + 1}:</span>` + renderInline(line);
     stepsWrap.appendChild(el);
     jitter(el);
   });
