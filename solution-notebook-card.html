@@ -35,14 +35,17 @@
   body.embed .stage{ padding:0; background:transparent; }
   body.embed{ background:transparent; }
 
+  /* preview mode only: the page scales down via JS (see fitStage below)
+     using this transform-origin, so it always fits the viewport instead
+     of rendering at full 1240x1754 and forcing zoom/scroll on a phone */
+  .page{ transform-origin:top center; }
+
   /* A4 real-notebook proportions (210:297mm), not social-post 4:5 */
   .page{
     position:relative;
-    width:1240px;
-    height:1754px;
-    background:
-      radial-gradient(120% 90% at 30% 0%, rgba(255,255,255,0.55), transparent 60%),
-      linear-gradient(180deg, var(--paper) 0%, var(--paper-warm) 100%);
+    width:1080px;
+    height:1350px;
+    background:#ffffff;
     box-shadow:
       0 40px 90px -20px var(--shadow),
       0 10px 25px -8px rgba(0,0,0,0.35);
@@ -66,8 +69,8 @@
     content:"";
     position:absolute; inset:0;
     background:
-      radial-gradient(140% 120% at 46% 34%, transparent 46%, rgba(0,0,0,0.05) 78%, rgba(0,0,0,0.13) 100%),
-      radial-gradient(70% 40% at 35% 6%, rgba(255,255,255,0.35), transparent 70%);
+      radial-gradient(140% 120% at 46% 34%, transparent 46%, rgba(0,0,0,0.04) 78%, rgba(0,0,0,0.10) 100%),
+      radial-gradient(70% 40% at 35% 6%, rgba(255,255,255,0.5), transparent 70%);
     pointer-events:none;
     z-index:6;
   }
@@ -79,8 +82,8 @@
     background-image:repeating-linear-gradient(
       to bottom,
       transparent 0,
-      transparent 65px,
-      var(--rule-blue) 66px
+      transparent 51px,
+      var(--rule-blue) 52px
     );
     opacity:0.75;
     z-index:1;
@@ -149,7 +152,7 @@
   .content{
     position:relative;
     z-index:2;
-    padding:70px 110px 80px 76px;
+    padding:56px 96px 70px 72px;
     height:100%;
     display:flex;
     flex-direction:column;
@@ -185,7 +188,7 @@
   .problem{
     font-family:'Kalam', cursive;
     font-size:32px;
-    line-height:66px;
+    line-height:52px;
     margin-bottom:0;
   }
 
@@ -199,8 +202,8 @@
   .step{
     font-family:'Kalam', cursive;
     font-size:30px;
-    line-height:66px;
-    height:66px;
+    line-height:52px;
+    height:52px;
     display:flex;
     align-items:center;
     white-space:nowrap;
@@ -375,6 +378,20 @@
     const s = document.createElement('span');
     spiral.appendChild(s);
   }
+
+  /* fit the card to whatever viewport it's opened in — phones included —
+     unless embed=1, where ScreenshotOne needs the true fixed 1240x1754px
+     render with no scaling applied. */
+  function fitStage(){
+    if (document.body.classList.contains('embed')) return;
+    const page = document.querySelector('.page');
+    const availW = window.innerWidth - 40;
+    const availH = window.innerHeight - 40;
+    const scale = Math.min(availW / 1080, availH / 1350, 1);
+    page.style.transform = `rotate(-0.3deg) scale(${scale})`;
+  }
+  fitStage();
+  window.addEventListener('resize', fitStage);
 </script>
 </body>
 </html>
